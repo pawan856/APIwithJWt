@@ -1,5 +1,4 @@
 ﻿
-
 using System.ComponentModel.DataAnnotations;
 
 namespace APIwithJWt.Models
@@ -9,7 +8,7 @@ namespace APIwithJWt.Models
         [Required]
         public string Email { get; set; }
 
-        public String password { get; set; }
+        public string  password { get; set; }
 
     }
 }
