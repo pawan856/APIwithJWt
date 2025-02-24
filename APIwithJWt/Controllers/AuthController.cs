@@ -15,11 +15,16 @@ namespace APIwithJWT.Controllers
     {
         private readonly ITokenService _tokenService;
         private readonly AppDbContext _context;
-
-        public AuthController(ITokenService tokenService, AppDbContext context)
+        private readonly ILogger _logger;
+        private readonly EmailService _emailService;
+        private readonly UserManager<User> _userManager;
+        public AuthController(ITokenService tokenService, AppDbContext context,ILogger logger, EmailService emailService)
         {
             _tokenService = tokenService;
             _context = context;
+            _emailService = emailService;
+            _logger = logger;
+            _userManager = UserManager;
         }
 
         [HttpPost("login")]
@@ -64,6 +69,40 @@ namespace APIwithJWT.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "User registered successfully!" });
+        }
+
+
+        [HttpPost("Forget-Password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] forgetPasswordRequest model)
+        {
+            var user = await _usermanager.FindByEmailasync(model.Email);
+
+            if (user == null)
+            {
+                return BadRequest(new { message = "User not found" });
+            }
+            var usertoken = await _usermanager.GenratePasswordReset.Async(user);
+            var resetLink = $"{_configuration["FrontendUrl"]}/reset-password?token={token}&email={user.Email}";            
+            await _emailservice.SendEmailAsync(user.email, "Reset Password", $"click  <a herf ='{resetLink}'here </a> to reset your password");
+            return Ok("Password Reset link has been sent to your mail");
+        }
+
+        [HttpPost("Reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPassword model)
+        {
+
+            var user = await _userManager.FindByEmailasync(model.Email);
+            {
+                if (user == null)
+                    return BadRequest(new { message = "User not found" });
+            }
+            var userresult = await _usermanager.Resetpasswordasync(user, model.Token, model.Newpassword);
+            if (!userresult.Succeeded)
+            {
+                return BadRequest(userresult.errors);
+            }
+            return Ok(new { message = "Password hasbeen Reset Successfully" });
+
         }
 
     }

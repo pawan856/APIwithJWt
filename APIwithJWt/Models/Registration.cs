@@ -1,4 +1,4 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
 namespace APIwithJWt.Models
 {
     public class Registration
