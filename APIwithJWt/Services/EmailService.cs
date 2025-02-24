@@ -1,39 +1,40 @@
-﻿using System.Net;
-using System.Net.Mail;
-using System.Net.NetworkInformation;
-using System.Reflection;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
+using APIwithJWt.Services;
+using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
+using APIwithJWt.Services;
 
-namespace APIwithJWt.Services
+namespace APIwithJWT.Services
 {
     public class EmailService : IEmailService
     {
-       
         private readonly IConfiguration _configuration;
 
-        public EmailService (IConfiguration configuration)
+        public EmailService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-         public async Task sendEmailasync (string email ,string subject , string body)
+
+        public async Task SendEmailAsync(string email, string subject, string body)
         {
-            var smtpClient = new Smtpclient(_configuration["smtp:host"]);
-            {
-                Port = int.Parse(smtpClient(_configuration["smtp:Port"]),
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Pawan kumar singh ", _configuration["Smtp:Username"]));
+            message.To.Add(new MailboxAddress("", email));
+            message.Subject = subject;
 
-                credentails = new NetworkCredential(_configuration["Smtp:Username"], _configuration["Smtp:Password"])),
-                    EnableSsl = true;
-            };
-            var mailmessage = new MailMessaage
+            message.Body = new TextPart("html")
             {
-                from = new MailAddress(_configuration["Smtp:username"]),
-
-                subject = subject,
-                body = body,
-                IsBodyHtml = true
+                Text = body
             };
 
-            mailmessage.To.Add(toEmail);
-            smtpClient.Send(mailmessage);
+            using (var client = new SmtpClient())
+            {
+                await client.ConnectAsync(_configuration["Smtp:Host"], int.Parse(_configuration["Smtp:Port"]), true);
+                await client.AuthenticateAsync(_configuration["Smtp:Username"], _configuration["Smtp:Password"]);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
         }
     }
 }

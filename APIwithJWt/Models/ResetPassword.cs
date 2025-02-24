@@ -18,7 +18,7 @@ namespace APIwithJWt.Models
         ErrorMessage = "Password must contain at least one uppercase, one lowercase, one number, and one special character.")]
         public string Password { get; set; }
 
-        public string newpassword { get; set; }
+        public string NewPassword { get; set; }
 
         public string confirmpassword { get; set; }
 
