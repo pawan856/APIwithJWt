@@ -6,6 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Allowspecficationsorigin", policy =>
+    {
+        policy.WithOrigins("https://example.com", "https://anotherdomain.com").AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -39,13 +46,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("Allowspecficationsorigin");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
