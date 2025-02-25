@@ -4,6 +4,6 @@ namespace APIwithJWt.Services
 {
     public interface IEmailService
     {
-        Task SendEmailasync(String toEmail, string subject, string body);
+        Task SendEmailAsync(String Email, string subject, string body);
     }
 }

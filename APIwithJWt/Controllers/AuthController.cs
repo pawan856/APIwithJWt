@@ -1,11 +1,10 @@
 ﻿using APIwithJWt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BCrypt.Net;
 using Microsoft.AspNetCore.Identity;
 using APIwithJWt.Models;
 using APIwithJWt.Data;
-using Microsoft.EntityFrameworkCore.Query.Internal;
+
 
 namespace APIwithJWT.Controllers
 {
@@ -15,14 +14,16 @@ namespace APIwithJWT.Controllers
     {
         private readonly ITokenService _tokenService;
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly IEmailService _emailService;
         private readonly UserManager<User> _userManager;
-        public AuthController(ITokenService tokenService, AppDbContext context, ILogger logger, SignInManager<ApplicationUser> signInManager, IEmailService emailService, UserManager<User> userManager)
+        public AuthController(ITokenService tokenService, AppDbContext context, ILogger logger, SignInManager<APIwithJWt.Data.ApplicationUser> signInManager,IConfiguration configuration, IEmailService emailService, UserManager<User> userManager)
         {
             _tokenService = tokenService;
             _context = context;
             _emailService = emailService;
+            _configuration = configuration;
             _logger = logger;
             _userManager = userManager;
         }
