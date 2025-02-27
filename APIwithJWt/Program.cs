@@ -10,7 +10,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Allowspecficationsorigin", policy =>
     {
-        policy.WithOrigins("https://example.com", "https://anotherdomain.com").AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("https://cogentservice.com", "https://cogent.com")
+        .AllowAnyHeader().AllowAnyMethod();
     });
 });
 
@@ -23,10 +24,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
-var issuer = jwtSettings["Issuer"];
-var audience = jwtSettings["Audience"];
+var JwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = Encoding.UTF8.GetBytes(JwtSettings["SecretKey"]);
+var issuer = JwtSettings["Issuer"];
+var audience = JwtSettings["Audience"];
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

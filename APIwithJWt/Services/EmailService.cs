@@ -1,9 +1,7 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
 using APIwithJWt.Services;
-using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
-using APIwithJWt.Services;
+
 
 namespace APIwithJWT.Services
 {
